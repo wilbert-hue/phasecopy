@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Color palette — 5-stop blue-teal gradient:
+  --c1: #1B4965  Deep Navy     rgb(27, 73, 101)
+  --c2: #1E6080  Medium Blue   rgb(30, 96, 128)
+  --c3: #2A8F9C  Teal          rgb(42, 143, 156)
+  --c4: #3AAFA9  Light Teal    rgb(58, 175, 169)
+  --c5: #4FBDBA  Lightest Teal rgb(79, 189, 186)
+*/
+:root {
+  --c1: #1B4965;
+  --c2: #1E6080;
+  --c3: #2A8F9C;
+  --c4: #3AAFA9;
+  --c5: #4FBDBA;
+
+  --background: #f0f5f7;
+  --foreground: #0c1b24;
+  --card: #e8f0f3;
+  --card-foreground: #0c1b24;
+  --popover: #f0f5f7;
+  --popover-foreground: #0c1b24;
+  --primary: #1B4965;
+  --primary-foreground: #f0f5f7;
+  --secondary: #e0ecf0;
+  --secondary-foreground: #1B4965;
+  --muted: #dbe6eb;
+  --muted-foreground: #3d6070;
+  --accent: #2A8F9C;
+  --accent-foreground: #f0f5f7;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: #c0d4dc;
+  --input: #dbe6eb;
+  --ring: #2A8F9C;
+  --radius: 0rem;
+  --sidebar: #e4eef2;
+  --sidebar-foreground: #0c1b24;
+  --sidebar-primary: #1B4965;
+  --sidebar-primary-foreground: #f0f5f7;
+  --sidebar-accent: #d6e8ed;
+  --sidebar-accent-foreground: #0c1b24;
+  --sidebar-border: #c0d4dc;
+  --sidebar-ring: #2A8F9C;
+}
+
+@theme inline {
+  /* Updated font-sans and font-mono to use IBM Plex */
+  --font-sans: "IBM Plex Sans", "IBM Plex Sans Fallback", sans-serif;
+  --font-mono: "IBM Plex Mono", "IBM Plex Mono Fallback", monospace;
+  --font-display: "Bebas Neue", "Bebas Neue Fallback", sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    overflow-x: hidden;
+    max-width: 100vw;
+    /* Apply scrollbar styles to html element */
+    scrollbar-width: thin;
+    scrollbar-color: hsl(0, 0%, 76%) hsl(0, 0%, 95%);
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(ellipse at 0% 0%, rgba(27, 73, 101, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 100% 50%, rgba(42, 143, 156, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 30% 100%, rgba(79, 189, 186, 0.06) 0%, transparent 40%);
+    overflow-x: hidden;
+    max-width: 100vw;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(0, 0%, 76%) hsl(0, 0%, 95%);
+  }
+  /* Webkit scrollbar styling for html and body */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 10px;
+  }
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track {
+    background: hsl(0, 0%, 95%);
+  }
+  html::-webkit-scrollbar-thumb,
+  body::-webkit-scrollbar-thumb {
+    background: hsl(0, 0%, 76%);
+    border-radius: 0px;
+  }
+  html::-webkit-scrollbar-thumb:hover,
+  body::-webkit-scrollbar-thumb:hover {
+    background: hsl(0, 0%, 64%);
+  }
+}
+
+/* Custom noise texture overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Grid background pattern */
+.grid-bg {
+  background-image: linear-gradient(to right, rgba(27, 73, 101, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(27, 73, 101, 0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Custom selection color */
+::selection {
+  background: #1B4965;
+  color: #f0f5f7;
+}
