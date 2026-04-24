@@ -77,9 +77,6 @@ export function DemoCountdown({ notAfterMs }: Props) {
         >
           {label}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline hidden">
-          Until then, the demo email and password in your configuration can sign in
-        </span>
       </div>
     </div>
   )

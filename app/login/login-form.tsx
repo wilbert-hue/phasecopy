@@ -90,12 +90,6 @@ export function LoginForm({ returnTo: defaultReturnTo }: LoginFormProps) {
             longer accepted. Update the demo dates in the server config if you need a new window.
           </p>
         )}
-        <p className="mt-3 font-mono text-sm text-muted-foreground max-w-prose">
-          Use the demo <code className="text-foreground/90">DASHBOARD_DEMO_EMAIL</code> and{" "}
-          <code className="text-foreground/90">DASHBOARD_PASSWORD</code> from{" "}
-          <code className="text-foreground/90">.env.local</code>. They are accepted for 11 days after{" "}
-          <code className="text-foreground/90">DASHBOARD_DEMO_START_AT</code>—not on a per–sign-in timer.
-        </p>
 
         <form onSubmit={onSubmit} className="mt-10 space-y-5">
           <div>
