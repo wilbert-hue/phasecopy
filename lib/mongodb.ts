@@ -3,9 +3,8 @@ import { MongoClient, Db } from "mongodb"
 const uri = process.env.MONGODB_URI
 const dbName = process.env.MONGODB_DB || "phase_xs"
 
-if (!uri) {
-  // Don't throw at import time so build works without env;
-  // throw at use time instead.
+if (!uri && process.env.NODE_ENV === "development") {
+  // Only log locally; keep Vercel/build logs clean (add MONGODB_URI in the project for production).
   console.warn("[mongodb] MONGODB_URI is not set. API routes that need the DB will fail until it is configured.")
 }
 
