@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "data:merge-reimbursement": "node scripts/merge-reimbursement-from-xlsx.mjs",
+    "data:sync-trials": "node scripts/sync-trials-from-excel.mjs",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^4.18.0",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.10.0",
     "@nuxt/kit": "latest",

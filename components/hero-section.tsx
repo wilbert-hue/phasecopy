@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { AUTH0_LOGIN_HREF, AUTH0_SIGNUP_HREF } from "@/lib/auth0-routes"
 import { ScrambleTextOnHover } from "@/components/scramble-text"
 import { SplitFlapPhaseXsNctBack, SplitFlapMuteToggle, SplitFlapAudioProvider } from "@/components/split-flap-text"
 import { AnimatedNoise } from "@/components/animated-noise"
@@ -89,12 +88,12 @@ export function HeroSection() {
 
         <p className="mt-12 max-w-md font-mono text-sm leading-relaxed" style={{ color: "#3d6070" }}>
           <span style={{ color: "#3AAFA9", fontWeight: 600 }}>1,000+ molecules.</span>{" "}
-          Access the dashboard with Auth0—Universal Login, SSO, and social connections. Built for teams that need audited access and optional billing-ready flows.
+          Open the password-protected dashboard to explore US biologics trial signals and analytics.
         </p>
 
         <div className="mt-16 flex flex-wrap items-center gap-6 md:gap-8">
           <a
-            href={AUTH0_LOGIN_HREF}
+            href="/login"
             className="group inline-flex items-center gap-3 px-6 py-3 font-mono text-xs uppercase tracking-widest text-white transition-all duration-300 hover:shadow-lg"
             style={{
               background: "linear-gradient(135deg, #1B4965, #1E6080)",
@@ -113,7 +112,7 @@ export function HeroSection() {
             <BitmapChevron className="transition-transform duration-[400ms] ease-in-out group-hover:rotate-45" />
           </a>
           <a
-            href={AUTH0_SIGNUP_HREF}
+            href="/login?returnTo=/dashboard"
             className="font-mono text-xs uppercase tracking-widest transition-colors duration-200 border border-[rgba(42,143,156,0.35)] px-4 py-2.5 rounded"
             style={{ color: "#1B4965" }}
             onMouseOver={(e) => {
@@ -125,7 +124,7 @@ export function HeroSection() {
               e.currentTarget.style.borderColor = "rgba(42, 143, 156, 0.35)"
             }}
           >
-            Create account
+            Dashboard access
           </a>
           <a
             href="#metrics"

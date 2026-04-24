@@ -1,43 +1,40 @@
-import { NextResponse } from "next/server"
-import { DomainResolutionError } from "@auth0/nextjs-auth0/errors"
-import { auth0 } from "./lib/auth0"
+import { NextResponse, type NextRequest } from "next/server"
+import { verifySessionTokenEdge } from "@/lib/session-edge"
+import { SESSION_COOKIE_NAME } from "@/lib/session-constants"
 
-/** Old Clerk dev URLs (?__clerk…) can linger in bookmarks/history; strip so Auth0-only app stays clean. */
-function redirectWithoutLegacyClerkParams(request: Request): NextResponse | null {
-  const url = new URL(request.url)
+function redirectWithoutLegacyClerkParams(request: NextRequest): NextResponse | null {
+  const u = request.nextUrl.clone()
   let changed = false
-  for (const key of [...url.searchParams.keys()]) {
+  for (const key of [...u.searchParams.keys()]) {
     if (key.startsWith("__clerk")) {
-      url.searchParams.delete(key)
+      u.searchParams.delete(key)
       changed = true
     }
   }
   if (!changed) return null
-  const path = url.pathname + (url.searchParams.toString() ? `?${url.searchParams}` : "") + url.hash
-  return NextResponse.redirect(new URL(path, url.origin), 307)
+  const path = u.pathname + (u.searchParams.toString() ? `?${u.searchParams}` : "") + u.hash
+  return NextResponse.redirect(new URL(path, request.url), 307)
 }
 
-export async function proxy(request: Request) {
+export async function proxy(request: NextRequest) {
   const clean = redirectWithoutLegacyClerkParams(request)
   if (clean) return clean
 
-  try {
-    return await auth0.middleware(request)  } catch (e) {
-    if (e instanceof DomainResolutionError) {
-      const cause = e.cause instanceof Error ? e.cause.message : e.cause
-      console.error(
-        "[auth0] DomainResolutionError:",
-        e.message,
-        cause != null ? `\n  Cause: ${cause}` : "",
-        "\n  Fix: set AUTH0_DOMAIN (e.g. dev-abc.us.auth0.com) or AUTH0_ISSUER_BASE_URL in .env.local, then restart `next dev`.",
-      )
+  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+    const secret = process.env.DASHBOARD_SESSION_SECRET?.trim()
+    const token = request.cookies.get(SESSION_COOKIE_NAME)?.value
+    const ok = secret && token && (await verifySessionTokenEdge(token, secret))
+    if (!ok) {
+      const login = new URL("/login", request.url)
+      const back = request.nextUrl.pathname + request.nextUrl.search
+      login.searchParams.set("returnTo", back)
+      return NextResponse.redirect(login)
     }
-    throw e
   }
+
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
 }

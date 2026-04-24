@@ -2,8 +2,6 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react"
 import Link from "next/link"
-import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import type { User } from "@auth0/nextjs-auth0/types"
 import trialsRaw from "@/app/data/trials.json"
 import { DashboardKPIs } from "@/components/dashboard/kpi-cards"
 import { DashboardCharts } from "@/components/dashboard/charts"
@@ -11,6 +9,7 @@ import { TrialsTable } from "@/components/dashboard/trials-table"
 import { DashboardFilters } from "@/components/dashboard/filters"
 import { TrialDetailSheet } from "@/components/dashboard/trial-detail-sheet"
 import { ComparisonPanel } from "@/components/dashboard/comparison-panel"
+import { PageSection } from "@/components/page-section"
 import { ArrowLeft, User as UserIcon, Search as SearchIcon, FileText, Trash2, X, LogOut } from "lucide-react"
 
 interface ViewedTrialEntry {
@@ -45,6 +44,8 @@ export interface Trial {
   incidence2025: number | null
   approvalYear: string
   drugPrice: string
+  /** Price Source URL from master spreadsheet (drugs.com etc.) */
+  drugPriceUrl: string
   dosageStrength: string
   adverseEffect: string
   locationOther: string
@@ -63,6 +64,8 @@ export interface Trial {
   marketForecast2025: string
   marketForecast2026: string
   marketForecast2027: string
+  /** Payor / access (from source spreadsheet) */
+  reimbursement?: string
 }
 
 const trials: Trial[] = trialsRaw as Trial[]
@@ -101,7 +104,7 @@ function normalizePhase(p: string): string {
 
 export { normalizePhase }
 
-function DashboardPage({ user }: { user: User }) {
+export default function DashboardPage() {
   const [filters, setFilters] = useState<Filters>(defaultFilters)
   const [selectedTrial, setSelectedTrialState] = useState<Trial | null>(null)
 
@@ -111,7 +114,7 @@ function DashboardPage({ user }: { user: User }) {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
 
-  // Strip legacy Clerk query params (?__clerk…) from bookmarks / old history (app is Auth0-only).
+  // Strip legacy Clerk query params (?__clerk…) from bookmarks / old history.
   useEffect(() => {
     const url = new URL(window.location.href)
     let changed = false
@@ -210,7 +213,8 @@ function DashboardPage({ user }: { user: User }) {
       t.indication.toLowerCase().includes(ls) ||
       t.sponsor.toLowerCase().includes(ls) ||
       t.diseaseCondition.toLowerCase().includes(ls) ||
-      t.technology.toLowerCase().includes(ls)
+      t.technology.toLowerCase().includes(ls) ||
+      (t.reimbursement?.toLowerCase() ?? "").includes(ls)
     )
   }, [])
 
@@ -276,7 +280,6 @@ function DashboardPage({ user }: { user: User }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Grid background */}
       <div className="grid-bg fixed inset-0 opacity-20" aria-hidden="true" />
       <div className="noise-overlay" aria-hidden="true" />
 
@@ -284,38 +287,30 @@ function DashboardPage({ user }: { user: User }) {
         {/* Header */}
         <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
           <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between">
+            <div className="flex min-h-[4.25rem] py-2 items-center justify-between">
               <div className="flex items-center gap-4">
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+                  className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Back
                 </Link>
                 <div className="h-4 w-px bg-border" />
-                <h1 className="font-[var(--font-bebas)] text-2xl tracking-wider">
+                <h1 className="font-[var(--font-bebas)] text-3xl tracking-wider">
                   PHASE-XS
                 </h1>
-                <span className="hidden sm:inline-block font-mono text-[10px] uppercase tracking-widest text-muted-foreground border border-border px-2 py-0.5">
+                <span className="hidden sm:inline-block font-mono text-[12px] uppercase tracking-widest text-muted-foreground border border-border px-2 py-0.5">
                   Clinical Trials Dashboard
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] text-muted-foreground">
+                <span className="font-mono text-[12px] text-muted-foreground">
                   {filteredTrials.length.toLocaleString()} / {trials.length.toLocaleString()} trials
                 </span>
-                {user.email && (
-                  <span
-                    className="hidden md:inline max-w-[160px] truncate font-mono text-[10px] text-muted-foreground border border-border/80 px-2 py-0.5 rounded"
-                    title={user.email}
-                  >
-                    {user.email}
-                  </span>
-                )}
                 <a
-                  href="/auth/logout"
-                  className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:border-[rgba(42,143,156,0.6)] transition-colors"
+                  href="/api/auth/logout"
+                  className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:border-[rgba(42,143,156,0.6)] transition-colors"
                 >
                   <LogOut className="h-3 w-3" />
                   Sign out
@@ -341,7 +336,7 @@ function DashboardPage({ user }: { user: User }) {
                       onWheel={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        <span className="font-mono text-[12px] uppercase tracking-widest text-muted-foreground">
                           Your Activity
                         </span>
                         <div className="flex items-center gap-1">
@@ -349,7 +344,7 @@ function DashboardPage({ user }: { user: User }) {
                             <button
                               type="button"
                               onClick={clearHistory}
-                              className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                              className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                               title="Clear history"
                             >
                               <Trash2 className="h-3 w-3" />
@@ -371,12 +366,12 @@ function DashboardPage({ user }: { user: User }) {
                       <div className="px-3 py-2">
                         <div className="flex items-center gap-1.5 mb-1.5 text-muted-foreground">
                           <SearchIcon className="h-3 w-3" />
-                          <span className="font-mono text-[9px] uppercase tracking-widest">
+                          <span className="font-mono text-[11px] uppercase tracking-widest">
                             Recent Searches
                           </span>
                         </div>
                         {searchHistory.length === 0 ? (
-                          <p className="font-mono text-[10px] text-muted-foreground/70 pl-4">
+                          <p className="font-mono text-[12px] text-muted-foreground/70 pl-4">
                             No searches yet
                           </p>
                         ) : (
@@ -389,7 +384,7 @@ function DashboardPage({ user }: { user: User }) {
                                     updateFilter("search", s)
                                     setUserMenuOpen(false)
                                   }}
-                                  className="flex-1 text-left truncate px-2 py-1 font-mono text-[11px] text-foreground/90 hover:text-foreground transition-colors"
+                                  className="flex-1 text-left truncate px-2 py-1 font-mono text-sm text-foreground/90 hover:text-foreground transition-colors"
                                 >
                                   {s}
                                 </button>
@@ -416,12 +411,12 @@ function DashboardPage({ user }: { user: User }) {
                       <div className="px-3 py-2">
                         <div className="flex items-center gap-1.5 mb-1.5 text-muted-foreground">
                           <FileText className="h-3 w-3" />
-                          <span className="font-mono text-[9px] uppercase tracking-widest">
+                          <span className="font-mono text-[11px] uppercase tracking-widest">
                             Viewed Reports
                           </span>
                         </div>
                         {viewedHistory.length === 0 ? (
-                          <p className="font-mono text-[10px] text-muted-foreground/70 pl-4">
+                          <p className="font-mono text-[12px] text-muted-foreground/70 pl-4">
                             No reports viewed yet
                           </p>
                         ) : (
@@ -438,10 +433,10 @@ function DashboardPage({ user }: { user: User }) {
                                     }}
                                     className="w-full text-left rounded px-2 py-1 hover:bg-muted transition-colors"
                                   >
-                                    <div className="font-mono text-[11px] text-foreground/90 truncate">
+                                    <div className="font-mono text-sm text-foreground/90 truncate">
                                       {v.nctId}
                                     </div>
-                                    <div className="font-mono text-[9px] text-muted-foreground truncate">
+                                    <div className="font-mono text-[11px] text-muted-foreground truncate">
                                       {v.molecule || "—"} · {v.indication || "—"}
                                     </div>
                                   </button>
@@ -460,40 +455,42 @@ function DashboardPage({ user }: { user: User }) {
         </header>
 
         {/* Main content */}
-        <main className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6">
-          {/* Filters - highest z so dropdowns sit above everything */}
-          <div className="relative z-40 mb-6">
-            <DashboardFilters
-              filters={filters}
-              filterOptions={filterOptions}
-              updateFilter={updateFilter}
-              resetFilters={resetFilters}
-              activeFilterCount={activeFilterCount}
-            />
+        <main className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 pt-6 pb-4">
+          {/* Filters — highest z so dropdowns sit above everything */}
+          <div className="relative z-40">
+            <PageSection page="dashboard" variant="filters" className="p-4 sm:p-5">
+              <DashboardFilters
+                filters={filters}
+                filterOptions={filterOptions}
+                updateFilter={updateFilter}
+                resetFilters={resetFilters}
+                activeFilterCount={activeFilterCount}
+              />
+            </PageSection>
           </div>
 
-          <div className="relative z-0 space-y-6">
-            {/* Comparison mode (2+ comma-separated search terms) */}
+          <PageSection
+            page="dashboard"
+            variant="data"
+            className="relative z-0 mt-6 space-y-6"
+          >
             {isComparing && <ComparisonPanel groups={comparisonGroups} />}
-
-            {/* KPI Cards */}
             <DashboardKPIs trials={filteredTrials} />
-
-            {/* Charts */}
             <DashboardCharts trials={filteredTrials} />
+          </PageSection>
 
-            {/* Data Table */}
+          <PageSection page="dashboard" variant="table" className="relative z-0 mt-6">
             <TrialsTable
               trials={filteredTrials}
               onSelectTrial={setSelectedTrial}
             />
-          </div>
+          </PageSection>
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-border py-6 mt-8">
+        <footer className="border-t border-border py-4 mt-6">
           <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-mono text-[12px] uppercase tracking-widest text-muted-foreground">
               PHASE-XS / US Clinical Trials Database / {trials.length.toLocaleString()} Records
             </p>
           </div>
@@ -506,4 +503,3 @@ function DashboardPage({ user }: { user: User }) {
   )
 }
 
-export default withPageAuthRequired(DashboardPage, { returnTo: "/dashboard" })

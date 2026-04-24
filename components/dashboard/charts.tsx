@@ -17,7 +17,7 @@ const COLORS = [
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="border border-border bg-background/60 backdrop-blur-sm p-5">
-      <h3 className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
+      <h3 className="font-mono text-[12px] uppercase tracking-widest text-muted-foreground mb-4">
         {title}
       </h3>
       {children}
@@ -30,7 +30,7 @@ const customTooltipStyle = {
   border: "1px solid #e0e0e0",
   borderRadius: 0,
   fontFamily: "var(--font-mono, monospace)",
-  fontSize: "11px",
+  fontSize: "13px",
   padding: "8px 12px",
 }
 
@@ -115,7 +115,7 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
   if (trials.length === 0) {
     return (
       <div className="border border-border p-12 text-center">
-        <p className="font-mono text-sm text-muted-foreground">No trials match the current filters</p>
+        <p className="font-mono text-base text-muted-foreground">No trials match the current filters</p>
       </div>
     )
   }
@@ -143,8 +143,8 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
               </Pie>
               <Tooltip contentStyle={customTooltipStyle} />
               <Legend
-                wrapperStyle={{ fontFamily: "var(--font-mono, monospace)", fontSize: "10px" }}
-                iconSize={8}
+                wrapperStyle={{ fontFamily: "var(--font-mono, monospace)", fontSize: "12px" }}
+                iconSize={10}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -157,12 +157,12 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={techData} layout="vertical" margin={{ left: 10, right: 16, top: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fontFamily: "var(--font-mono, monospace)" }} />
+              <XAxis type="number" tick={{ fontSize: 12, fontFamily: "var(--font-mono, monospace)" }} />
               <YAxis
                 type="category"
                 dataKey="name"
-                width={120}
-                tick={{ fontSize: 9, fontFamily: "var(--font-mono, monospace)" }}
+                width={132}
+                tick={{ fontSize: 11, fontFamily: "var(--font-mono, monospace)" }}
               />
               <Tooltip contentStyle={customTooltipStyle} />
               <Bar dataKey="value" fill="#1B4965" barSize={14} />
@@ -173,18 +173,20 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
 
       {/* Enrollment by Phase */}
       <ChartCard title="Enrollment by Phase">
-        <div className="h-[250px]">
+        <div className="h-[270px] min-h-[270px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={enrollmentByPhase} margin={{ left: 0, right: 16, top: 0, bottom: 0 }}>
+            <BarChart data={enrollmentByPhase} margin={{ left: 4, right: 12, top: 4, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
               <XAxis
                 dataKey="name"
-                tick={{ fontSize: 9, fontFamily: "var(--font-mono, monospace)" }}
-                angle={-45}
+                tick={{ fontSize: 11, fontFamily: "var(--font-mono, monospace)" }}
+                angle={-40}
                 textAnchor="end"
-                height={60}
+                height={76}
+                tickMargin={6}
+                interval={0}
               />
-              <YAxis tick={{ fontSize: 10, fontFamily: "var(--font-mono, monospace)" }} />
+              <YAxis tick={{ fontSize: 12, fontFamily: "var(--font-mono, monospace)" }} width={56} />
               <Tooltip contentStyle={customTooltipStyle} formatter={(v: number) => v.toLocaleString()} />
               <Bar dataKey="value" fill="#2A8F9C" barSize={28} />
             </BarChart>
@@ -198,8 +200,8 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={timelineData} margin={{ left: 0, right: 16, top: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
-              <XAxis dataKey="year" tick={{ fontSize: 9, fontFamily: "var(--font-mono, monospace)" }} />
-              <YAxis tick={{ fontSize: 10, fontFamily: "var(--font-mono, monospace)" }} />
+              <XAxis dataKey="year" tick={{ fontSize: 11, fontFamily: "var(--font-mono, monospace)" }} />
+              <YAxis tick={{ fontSize: 12, fontFamily: "var(--font-mono, monospace)" }} />
               <Tooltip contentStyle={customTooltipStyle} />
               <Area
                 type="monotone"
@@ -220,12 +222,12 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={topIndications} layout="vertical" margin={{ left: 10, right: 16, top: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fontFamily: "var(--font-mono, monospace)" }} />
+              <XAxis type="number" tick={{ fontSize: 12, fontFamily: "var(--font-mono, monospace)" }} />
               <YAxis
                 type="category"
                 dataKey="name"
-                width={140}
-                tick={{ fontSize: 9, fontFamily: "var(--font-mono, monospace)" }}
+                width={154}
+                tick={{ fontSize: 11, fontFamily: "var(--font-mono, monospace)" }}
               />
               <Tooltip contentStyle={customTooltipStyle} />
               <Bar dataKey="value" fill="#3AAFA9" barSize={14} />
@@ -255,8 +257,8 @@ export function DashboardCharts({ trials }: { trials: Trial[] }) {
               </Pie>
               <Tooltip contentStyle={customTooltipStyle} />
               <Legend
-                wrapperStyle={{ fontFamily: "var(--font-mono, monospace)", fontSize: "10px" }}
-                iconSize={8}
+                wrapperStyle={{ fontFamily: "var(--font-mono, monospace)", fontSize: "12px" }}
+                iconSize={10}
               />
             </PieChart>
           </ResponsiveContainer>
