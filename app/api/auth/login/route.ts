@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Server is not configured. Set DASHBOARD_DEMO_EMAIL, DASHBOARD_PASSWORD, and DASHBOARD_SESSION_SECRET in .env.local.",
+          "Sign-in is not configured on the server. Add DASHBOARD_DEMO_EMAIL, DASHBOARD_PASSWORD, and DASHBOARD_SESSION_SECRET in your project environment, then redeploy. On Vercel: Project → Settings → Environment Variables.",
       },
       { status: 503 },
     )
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Set DASHBOARD_DEMO_START_AT in .env.local (ISO-8601 date). Demo sign-in is allowed for 11 days after that instant.",
+          "Set DASHBOARD_DEMO_START_AT in your project environment to an ISO-8601 time (e.g. 2026-01-15T00:00:00.000Z), then redeploy. On Vercel: Settings → Environment Variables.",
       },
       { status: 503 },
     )
