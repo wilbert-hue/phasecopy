@@ -88,12 +88,12 @@ export function HeroSection() {
 
         <p className="mt-12 max-w-md font-mono text-sm leading-relaxed" style={{ color: "#3d6070" }}>
           <span style={{ color: "#3AAFA9", fontWeight: 600 }}>1,000+ molecules.</span>{" "}
-          Open the password-protected dashboard to explore US biologics trial signals and analytics.
+          Open the dashboard to explore US biologics trial signals and analytics.
         </p>
 
         <div className="mt-16 flex flex-wrap items-center gap-6 md:gap-8">
           <a
-            href="/login"
+            href="/dashboard"
             className="group inline-flex items-center gap-3 px-6 py-3 font-mono text-xs uppercase tracking-widest text-white transition-all duration-300 hover:shadow-lg"
             style={{
               background: "linear-gradient(135deg, #1B4965, #1E6080)",
@@ -108,23 +108,8 @@ export function HeroSection() {
               e.currentTarget.style.borderColor = "rgba(42, 143, 156, 0.3)"
             }}
           >
-            <ScrambleTextOnHover text="Sign in to dashboard" as="span" duration={0.6} />
+            <ScrambleTextOnHover text="Open dashboard" as="span" duration={0.6} />
             <BitmapChevron className="transition-transform duration-[400ms] ease-in-out group-hover:rotate-45" />
-          </a>
-          <a
-            href="/login?returnTo=/dashboard"
-            className="font-mono text-xs uppercase tracking-widest transition-colors duration-200 border border-[rgba(42,143,156,0.35)] px-4 py-2.5 rounded"
-            style={{ color: "#1B4965" }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.color = "#2A8F9C"
-              e.currentTarget.style.borderColor = "rgba(58, 175, 169, 0.6)"
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.color = "#1B4965"
-              e.currentTarget.style.borderColor = "rgba(42, 143, 156, 0.35)"
-            }}
-          >
-            Dashboard access
           </a>
           <a
             href="#metrics"

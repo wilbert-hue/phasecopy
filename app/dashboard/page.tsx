@@ -10,7 +10,7 @@ import { DashboardFilters } from "@/components/dashboard/filters"
 import { TrialDetailSheet } from "@/components/dashboard/trial-detail-sheet"
 import { ComparisonPanel } from "@/components/dashboard/comparison-panel"
 import { PageSection } from "@/components/page-section"
-import { ArrowLeft, User as UserIcon, Search as SearchIcon, FileText, Trash2, X, LogOut } from "lucide-react"
+import { ArrowLeft, User as UserIcon, Search as SearchIcon, FileText, Trash2, X } from "lucide-react"
 
 interface ViewedTrialEntry {
   nctId: string
@@ -308,13 +308,6 @@ export default function DashboardPage() {
                 <span className="font-mono text-[12px] text-muted-foreground">
                   {filteredTrials.length.toLocaleString()} / {trials.length.toLocaleString()} trials
                 </span>
-                <a
-                  href="/api/auth/logout"
-                  className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:border-[rgba(42,143,156,0.6)] transition-colors"
-                >
-                  <LogOut className="h-3 w-3" />
-                  Sign out
-                </a>
 
                 {/* User / history menu */}
                 <div className="relative" ref={userMenuRef}>
